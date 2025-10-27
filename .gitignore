@@ -1,0 +1,22 @@
+# Node
+node_modules/
+**/node_modules/
+# Env
+.env
+.env.*
+# OS
+.DS_Store
+Thumbs.db
+# Build
+dist/
+build/
+# Prisma local DB
+prisma/dev.db
+# Logs
+*.log
+# Vite
+.vite
+# Others
+*.zip
+*.tar
+
