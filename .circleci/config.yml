@@ -13,12 +13,12 @@ jobs:
       # See: https://circleci.com/developer/images/image/cimg/base
       - image: cimg/node:18.20
 
-  # Ejecutar dentro del directorio del frontend para evitar errores de ruta
-  working_directory: /home/circleci/project/Frontend-Huancavelica-Alertas-Agricolas
+    # Ejecutar dentro del directorio del frontend para evitar errores de ruta
+    working_directory: /home/circleci/project/Frontend-Huancavelica-Alertas-Agricolas
 
     # Add steps to the job
     # See: https://circleci.com/docs/guides/orchestrate/jobs-steps/#steps-overview & https://circleci.com/docs/reference/configuration-reference/#steps
-  steps:
+    steps:
       # Checkout the code as the first step.
       - checkout
       # Verificar y moverse al directorio frontend
@@ -69,7 +69,7 @@ jobs:
             mv -f app.jar /home/circleci/project/app.jar
       - store_artifacts:
           path: /home/circleci/project/app.jar
-          destination: frontend/app.jar 
+          destination: frontend/app.jar
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/guides/orchestrate/workflows/ & https://circleci.com/docs/reference/configuration-reference/#workflows
