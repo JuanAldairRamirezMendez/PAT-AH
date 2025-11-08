@@ -13,11 +13,27 @@ jobs:
       # See: https://circleci.com/developer/images/image/cimg/base
       - image: cimg/node:18.20
 
+    # Ejecutar los pasos dentro del directorio del frontend para evitar ENOENT
+    working_directory: /home/circleci/project/Frontend-Huancavelica-Alertas-Agricolas
+
     # Add steps to the job
     # See: https://circleci.com/docs/guides/orchestrate/jobs-steps/#steps-overview & https://circleci.com/docs/reference/configuration-reference/#steps
     steps:
       # Checkout the code as the first step.
       - checkout
+      # Verificar directorio frontend
+      - run:
+          name: Verificar directorio frontend
+          command: |
+            FRONTEND_DIR=/home/circleci/project/Frontend-Huancavelica-Alertas-Agricolas
+            if [ ! -d "$FRONTEND_DIR" ]; then
+              echo "Error: no se encontró $FRONTEND_DIR"
+              echo "Contenido del repositorio en $(pwd):"
+              ls -la
+              exit 1
+            fi
+            echo "Directorio frontend encontrado:"
+            ls -la "$FRONTEND_DIR"
       - run:
           name: Instalar dependencias
           command: npm ci
