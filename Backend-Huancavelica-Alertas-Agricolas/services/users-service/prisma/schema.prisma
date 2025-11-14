@@ -1,0 +1,49 @@
+generator client {
+  provider      = "prisma-client-js"
+  // Ensure Prisma generates a query engine compatible with linux-musl (used in alpine images)
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  nombre    String?
+  email     String?  @unique
+  telefono  String   @unique
+  password  String
+  ciudad    String?
+  activo    Boolean  @default(true)
+  prefs     String?
+  roles     String   @default("[\"user\"]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  alerts    Alert[]
+  logs      Log[]
+}
+
+model Alert {
+  id          String   @id @default(uuid())
+  titulo      String
+  descripcion String?
+  tipo        String?
+  severidad   String?
+  activa      Boolean  @default(true)
+  fecha       DateTime @default(now())
+  metadata    String?
+  user        User?    @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model Log {
+  id String @id @default(uuid())
+  nivel String
+  mensaje String
+  contexto String?
+  createdAt DateTime @default(now())
+  user User? @relation(fields: [userId], references: [id])
+  userId String?
+}

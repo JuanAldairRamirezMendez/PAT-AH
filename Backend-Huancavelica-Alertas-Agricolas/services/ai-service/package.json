@@ -1,0 +1,23 @@
+{
+  "name": "ai-service",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js",
+    "start:prod": "node src/main.js"
+  },
+  "dependencies": {
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/core": "^9.0.0",
+    "@nestjs/platform-express": "^9.4.3",
+    "@prisma/client": "^5.0.0",
+    "@tensorflow/tfjs": "^4.0.0",
+    "axios": "^1.13.2",
+    "ml-matrix": "^6.12.1",
+    "multer": "^2.0.2",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.0.0",
+    "xlsx": "^0.18.5"
+  }
+}
