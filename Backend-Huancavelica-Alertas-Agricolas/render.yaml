@@ -2,92 +2,95 @@
 # Ajusta nombres, planes y variables según sea necesario antes de usar.
 databases:
   - name: pat-ah-db
-    engine: postgresql
-    region: oregon
-    version: "14"
     plan: starter
+    region: oregon
 
 services:
   - type: web
     name: PAT-AH-auth
-    env: docker
+    runtime: docker
     branch: main
     dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/auth-service/Dockerfile
-    rootDir: .
     plan: starter
+    region: oregon
     envVars:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
         fromDatabase:
           name: pat-ah-db
+          property: connectionString
 
   - type: web
     name: PAT-AH-users
-    env: docker
+    runtime: docker
     branch: main
     dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/users-service/Dockerfile
-    rootDir: .
     plan: starter
+    region: oregon
     envVars:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
         fromDatabase:
           name: pat-ah-db
+          property: connectionString
 
   - type: web
     name: PAT-AH-rest
-    env: docker
+    runtime: docker
     branch: main
     dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/rest-service/Dockerfile
-    rootDir: .
     plan: starter
+    region: oregon
     envVars:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
         fromDatabase:
           name: pat-ah-db
+          property: connectionString
 
   - type: web
     name: PAT-AH-ai
-    env: docker
+    runtime: docker
     branch: main
     dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/ai-service/Dockerfile
-    rootDir: .
     plan: standard
+    region: oregon
     envVars:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
         fromDatabase:
           name: pat-ah-db
+          property: connectionString
 
   - type: web
     name: PAT-AH-ingest
-    env: docker
+    runtime: docker
     branch: main
     dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/ingest-service/Dockerfile
-    rootDir: .
     plan: standard
+    region: oregon
     envVars:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
         fromDatabase:
           name: pat-ah-db
+          property: connectionString
 
 jobs:
   - type: job
     name: pat-ah-prisma-migrate
-    env: docker
+    runtime: docker
     branch: main
     dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/auth-service/Dockerfile
-    rootDir: .
     plan: free
     command: npx prisma migrate deploy --schema=services/shared/prisma/schema.prisma
     envVars:
       - key: DATABASE_URL
         fromDatabase:
           name: pat-ah-db
+          property: connectionString
