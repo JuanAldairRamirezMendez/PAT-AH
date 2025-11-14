@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: pat_ah
+      POSTGRES_USER: pat
+      POSTGRES_PASSWORD: pat
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    environment:
+      DATABASE_URL: postgres://pat:pat@db:5432/pat_ah
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+
+  users-service:
+    build:
+      context: .
+      dockerfile: services/users-service/Dockerfile
+    environment:
+      DATABASE_URL: postgres://pat:pat@db:5432/pat_ah
+    ports:
+      - "3002:3002"
+    depends_on:
+      - db
+
+  rest-service:
+    build:
+      context: .
+      dockerfile: services/rest-service/Dockerfile
+    environment:
+      DATABASE_URL: postgres://pat:pat@db:5432/pat_ah
+    ports:
+      - "3003:3003"
+    depends_on:
+      - db
+
+  ai-service:
+    build:
+      context: .
+      dockerfile: services/ai-service/Dockerfile
+    environment:
+      DATABASE_URL: postgres://pat:pat@db:5432/pat_ah
+    ports:
+      - "3004:3004"
+    depends_on:
+      - db
+
+  ingest-service:
+    build:
+      context: .
+      dockerfile: services/ingest-service/Dockerfile
+    environment:
+      DATABASE_URL: postgres://pat:pat@db:5432/pat_ah
+    command: ["sh","-c","node src/index.js"]
+    depends_on:
+      - db
+
+volumes:
+  db-data:

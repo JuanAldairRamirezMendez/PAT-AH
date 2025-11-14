@@ -1,12 +1,69 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
+import { VitePWA } from 'vite-plugin-pwa';
 import { fileURLToPath, URL } from 'node:url';
 
 // Para usar __dirname en ES modules
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
-    plugins: [react()],
+    // Habilitar PWA sólo cuando la variable de entorno VITE_ENABLE_PWA sea 'true'
+    plugins: [
+        react(),
+        ...(process.env.VITE_ENABLE_PWA === 'true'
+            ? [
+                  VitePWA({
+                      registerType: 'autoUpdate',
+                      manifestFilename: 'manifest.webmanifest',
+                      includeAssets: [
+                          'favicon.ico',
+                          'apple-touch-icon.png',
+                          'android-chrome-192x192.png',
+                          'android-chrome-512x512.png'
+                      ],
+                      manifest: {
+                          name: 'Huancavelica Alertas Agrícolas',
+                          short_name: 'Alertas',
+                          description: 'Alertas agrícolas para Huancavelica',
+                          theme_color: '#ffffff',
+                          background_color: '#ffffff',
+                          display: 'standalone',
+                          scope: '/',
+                          start_url: '/',
+                          icons: [
+                              { src: 'android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+                              { src: 'android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
+                              { src: 'apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
+                          ]
+                      },
+                      workbox: {
+                          runtimeCaching: [
+                              {
+                                  urlPattern: /^https:\/\/.+\/.*/i,
+                                  handler: 'NetworkFirst',
+                                  options: {
+                                      cacheName: 'api-cache',
+                                      expiration: { maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 }
+                                  }
+                              },
+                              {
+                                  urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
+                                  handler: 'CacheFirst',
+                                  options: {
+                                      cacheName: 'image-cache',
+                                      expiration: { maxEntries: 60, maxAgeSeconds: 30 * 24 * 60 * 60 }
+                                  }
+                              }
+                          ]
+                      },
+                      // Desactivar opciones PWA en modo dev para evitar interferencias en entornos preview
+                      devOptions: {
+                          enabled: false
+                      }
+                  })
+              ]
+            : [])
+    ],
     resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
         alias: {

@@ -1,0 +1,96 @@
+# render.yaml - definición multi-servicio para Render
+# Ajusta nombres, planes y variables según sea necesario antes de usar.
+databases:
+  - name: pat-ah-db
+    plan: starter
+    region: oregon
+
+services:
+  - type: web
+    name: PAT-AH-auth
+    runtime: docker
+    branch: main
+    dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/auth-service/Dockerfile
+    plan: starter
+    region: oregon
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pat-ah-db
+          property: connectionString
+
+  - type: web
+    name: PAT-AH-users
+    runtime: docker
+    branch: main
+    dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/users-service/Dockerfile
+    plan: starter
+    region: oregon
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pat-ah-db
+          property: connectionString
+
+  - type: web
+    name: PAT-AH-rest
+    runtime: docker
+    branch: main
+    dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/rest-service/Dockerfile
+    plan: starter
+    region: oregon
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pat-ah-db
+          property: connectionString
+
+  - type: web
+    name: PAT-AH-ai
+    runtime: docker
+    branch: main
+    dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/ai-service/Dockerfile
+    plan: standard
+    region: oregon
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pat-ah-db
+          property: connectionString
+
+  - type: web
+    name: PAT-AH-ingest
+    runtime: docker
+    branch: main
+    dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/ingest-service/Dockerfile
+    plan: standard
+    region: oregon
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pat-ah-db
+          property: connectionString
+
+jobs:
+  - type: job
+    name: pat-ah-prisma-migrate
+    runtime: docker
+    branch: main
+    dockerfilePath: Backend-Huancavelica-Alertas-Agricolas/services/auth-service/Dockerfile
+    plan: free
+    command: npx prisma migrate deploy --schema=services/shared/prisma/schema.prisma
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pat-ah-db
+          property: connectionString
